@@ -2,9 +2,9 @@
   "name": "signed-cookies",
   "version": "1.0.0",
   "description": "",
-  "main": "server-cookies.js",
+  "main": "server.js",
   "scripts": {
-      "start": "node server-cookies.js"
+      "start": "node server.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
