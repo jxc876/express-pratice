@@ -13,8 +13,11 @@ import bcrypt from "bcrypt";
  */
 const app = express();
 
+// COOKIE_SECRET="xxx" node server-cookie.js
+const COOKIE_SECRET = process.env.COOKIE_SECRET || "replace-this-with-a-real-secret";
+
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser("replace-this-with-a-real-secret"));
+app.use(cookieParser(COOKIE_SECRET));
 
 const PASSWORD_HASH = await bcrypt.hash("secret123", 12);
 
