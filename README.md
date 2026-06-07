@@ -4,8 +4,8 @@ A few practice projects with Express.
 
 # `auth-sandbox`
 
-* `server-simple.js` — Uses a signed cookie & password to protect a page
-* `server.js` — Allows User sign-up & login, uses server side sessions
+* `server-cookies.js` — Uses a signed cookie & password to protect a page
+* `server-sessions.js` — Allows User sign-up & login, uses server side sessions
 
 ## `basic-web`
 
