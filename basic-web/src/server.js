@@ -39,6 +39,7 @@ app.use(
  * Custom middleware to make the current user and flash messages available in all views.
  * Flash messages are stored in the session and cleared after being displayed once.
  */
+// Must come before any route handlers that access currentUser or flash messages
 app.use((req, res, next) => {
   res.locals.currentUser = getCurrentUser(req);
   res.locals.flash = req.session.flash;
