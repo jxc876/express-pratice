@@ -11,12 +11,16 @@ import crypto from "crypto";
  * See https://www.npmjs.com/package/express-session
  */
 const app = express();
+const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || "127.0.0.1";
 
 // Parse URL-encoded bodies (application/x-www-form-urlencoded)
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.json());
 
+/**
+ * Configure Sessions.
+ */
 app.use(session({
     secret: "replace-this-with-a-real-secret",
     resave: false,
@@ -28,7 +32,7 @@ app.use(session({
     },
 }));
 
-// Signup Route
+// Handle Signup request
 app.post("/signup", async (req, res) => {
     console.log("\n-------------------------------");
     console.log("Signup request received");
@@ -62,6 +66,7 @@ app.post("/signup", async (req, res) => {
     res.redirect("/login");
 });
 
+// Show basic login form
 app.get("/login", (req, res) => {
     console.log("\n-------------------------------");
     console.log("Login page requested");
@@ -76,7 +81,7 @@ app.get("/login", (req, res) => {
 });
 
 
-// Login Route
+// Handle login request
 app.post("/login", async (req, res) => {
     console.log("\n-------------------------------");
     console.log("Login request received");
@@ -119,7 +124,7 @@ app.post("/login", async (req, res) => {
 });
 
 
-// Logout route
+// Handle Logout request
 app.post("/logout", (req, res) => {
     console.log("\n-------------------------------");
     console.log("Logout request received");
@@ -174,6 +179,6 @@ async function findUserByUsername(username) {
 }
 
 
-app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
+app.listen(PORT, HOST, () => {
+    console.log(`Server running on http://${HOST}:${PORT}`);
 });

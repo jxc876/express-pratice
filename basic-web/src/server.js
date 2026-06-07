@@ -10,20 +10,18 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "127.0.0.1";
 
-const defaultUser = {
-  id: randomUUID(),
-  name: "Demo User",
-  email: "demo@example.com",
-  passwordHash: bcrypt.hashSync("password123", 12),
-  joinedAt: new Date()
-};
-const users = [defaultUser];
-
+/**
+ * Setup EJS as the view engine.
+ */
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
+
+/**
+ * Configure Sessions.
+ */
 app.use(
   session({
     name: "basic_web_sid",
@@ -38,6 +36,10 @@ app.use(
   })
 );
 
+/**
+ * Custom middleware to make the current user and flash messages available in all views.
+ * Flash messages are stored in the session and cleared after being displayed once.
+ */
 app.use((req, res, next) => {
   res.locals.currentUser = getCurrentUser(req);
   res.locals.flash = req.session.flash;
@@ -60,6 +62,7 @@ app.get("/signup", redirectIfAuthenticated, (req, res) => {
   res.render("signup", { title: "Sign Up", form: {} });
 });
 
+// Handle Signup request
 app.post("/signup", redirectIfAuthenticated, async (req, res) => {
   const { name, email, password } = req.body;
   const cleanName = String(name || "").trim();
@@ -104,10 +107,12 @@ app.post("/signup", redirectIfAuthenticated, async (req, res) => {
   res.redirect("/members");
 });
 
+// Show basic login form
 app.get("/login", redirectIfAuthenticated, (req, res) => {
   res.render("login", { title: "Log In", form: {} });
 });
 
+// Handle login request
 app.post("/login", redirectIfAuthenticated, async (req, res) => {
   const email = String(req.body.email || "").trim().toLowerCase();
   const password = String(req.body.password || "");
@@ -127,6 +132,7 @@ app.post("/login", redirectIfAuthenticated, async (req, res) => {
   res.redirect("/members");
 });
 
+// Handle Logout request
 app.post("/logout", requireAuth, (req, res) => {
   req.session.destroy((error) => {
     if (error) {
@@ -150,10 +156,8 @@ app.use((req, res) => {
   res.status(404).render("not-found", { title: "Not Found" });
 });
 
-function getCurrentUser(req) {
-  return users.find((user) => user.id === req.session.userId);
-}
 
+// Middleware for protected pages
 function requireAuth(req, res, next) {
   if (!getCurrentUser(req)) {
     req.session.flash = "Please log in to view the members area.";
@@ -169,6 +173,20 @@ function redirectIfAuthenticated(req, res, next) {
   }
 
   next();
+}
+
+const defaultUser = {
+  id: randomUUID(),
+  name: "Demo User",
+  email: "demo@example.com",
+  passwordHash: bcrypt.hashSync("password123", 12),
+  joinedAt: new Date()
+};
+
+const users = [defaultUser];
+
+function getCurrentUser(req) {
+  return users.find((user) => user.id === req.session.userId);
 }
 
 app.listen(PORT, HOST, () => {
