@@ -1,5 +1,5 @@
 {
-  "name": "basic-web",
+  "name": "server-sessions-2",
   "version": "1.0.0",
   "description": "Basic Express app with public and members-only areas.",
   "main": "src/server.js",
