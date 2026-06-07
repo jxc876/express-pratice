@@ -5,11 +5,9 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "server.js",
+  "main": "server-sessions.js",
   "scripts": {
-    "start": "node server-sessions.js",
-    "simple-cookie": "node server-cookies.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server-sessions.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

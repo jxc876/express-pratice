@@ -1,0 +1,18 @@
+{
+  "name": "signed-cookies",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server-cookies.js",
+  "scripts": {
+      "start": "node server-cookies.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

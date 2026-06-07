@@ -3,7 +3,8 @@ import cookieParser from "cookie-parser";
 import bcrypt from "bcrypt";
 
 /**
- * This example uses a simple signed cookie to protect the members area.
+ * This example uses a simple password to protect a members only area.
+ * When the user provides the correct password, a signed cookie is set to indicate that the user is authenticated.
  * 
  * The cookie is named `site_auth` and has a value of "yes" when the user is authenticated.
  * The cookie is signed to prevent tampering, but it is not encrypted, so it should not contain sensitive data.
