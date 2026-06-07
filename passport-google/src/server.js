@@ -59,14 +59,17 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
         clientSecret: GOOGLE_CLIENT_SECRET,
         callbackURL: GOOGLE_CALLBACK_URL
       },
+      // callback function to find or create a user based on their Google profile
       (accessToken, refreshToken, profile, done) => {
         const email = getPrimaryEmail(profile);
-        let user = users.find((candidate) => candidate.googleId === profile.id);
 
+        // find user by googleId or email
+        let user = users.find((candidate) => candidate.googleId === profile.id);
         if (!user && email) {
           user = users.find((candidate) => candidate.email === email);
         }
 
+        // if user exists, update their googleId and profile info if needed
         if (user) {
           user.googleId = profile.id;
           user.name = user.name || profile.displayName || email;
@@ -75,6 +78,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
           return done(null, user);
         }
 
+        // if user doesn't exist, create a new one
         user = {
           id: randomUUID(),
           googleId: profile.id,
@@ -84,7 +88,10 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
           joinedAt: new Date()
         };
 
+        // In a real application, you'd save the user to the database here
         users.push(user);
+
+        // pass the user to Passport
         done(null, user);
       }
     )
