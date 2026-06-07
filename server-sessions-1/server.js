@@ -22,7 +22,7 @@ app.use(express.json());
  * Configure Sessions.
  */
 app.use(session({
-    secret: "replace-this-with-a-real-secret",
+    secret: process.env.SESSION_SECRET || "replace-this-with-a-real-secret",
     resave: false,
     saveUninitialized: false,
     cookie: {
