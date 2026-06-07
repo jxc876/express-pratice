@@ -1,0 +1,34 @@
+<%- include("partials/header") %>
+
+<section class="auth-card">
+
+  <h1>Create your account</h1>
+
+  <% if (typeof error !== "undefined") { %>
+    <p class="error"><%= error %></p>
+  <% } %>
+
+  <a class="button google-button" href="/auth/google">Continue with Google</a>
+  <div class="auth-divider"><span>or</span></div>
+
+  <form action="/signup" method="post">
+    <label>
+      Name
+      <input name="name" autocomplete="name" value="<%= form.name || "" %>" required>
+    </label>
+    <label>
+      Email
+      <input type="email" name="email" autocomplete="email" value="<%= form.email || "" %>" required>
+    </label>
+    <label>
+      Password
+      <input type="password" name="password" autocomplete="new-password" minlength="8" required>
+    </label>
+    <button class="button" type="submit">Sign up</button>
+  </form>
+
+  <p class="auth-switch">Already have an account? <a href="/login">Log in</a>.</p>
+  
+</section>
+
+<%- include("partials/footer") %>
