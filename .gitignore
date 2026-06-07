@@ -1,0 +1,6 @@
+node_modules/
+auth-sandbox/node_modules/
+basic-web/node_modules/
+.env
+.DS_Store
+npm-debug.log*

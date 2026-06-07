@@ -1,0 +1,45 @@
+# Auth URLs
+
+### Signup
+### The Response includes a redirect, "302 Found, Location: /login"
+POST http://localhost:3000/signup HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+username=user123
+&password=password123
+
+
+### Login
+### The Reponse includes a Set-Cookie Header with the Session ID 
+### It also includes a redirect, "302 Found, Location:/members"
+POST http://localhost:3000/login HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+username=user123
+&password=password123
+
+
+### Invalid Login
+### The Response is "401 Unauthorized" with a message "Invalid username or password"
+POST http://localhost:3000/login HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+
+username=user123
+&password=xxxx
+
+
+### Members Area with Valid ogin Session
+### The Response is "200 OK" with a message "Welcome to the members area, user"
+GET http://localhost:3000/members HTTP/1.1
+Cookie: connect.sid=s%3A7V7VCdvxhwkQFxvbmELIZOI3GBKTUdi-.GG3%2FEcxflrVSrW411rGyTKrcDGERlsY9j4%2BKABcrva0; Path=/; HttpOnly; SameSite=Lax
+
+
+### Members Area with No Login Session
+### The Response is "401 Unauthorized" with a message "Unauthorized"
+GET http://localhost:3000/members HTTP/1.1
+
+
+### Logout
+### The Response includes a redirect, "302 Found, Location: /login"
+### It also tell the client to clear the session cookie
+POST http://localhost:3000/logout HTTP/1.1

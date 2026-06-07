@@ -1,0 +1,20 @@
+@media (max-width: 760px) {
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nav {
+    justify-content: flex-start;
+  }
+
+  .panel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .member-list li {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+}

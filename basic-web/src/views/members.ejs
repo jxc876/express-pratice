@@ -1,0 +1,23 @@
+<%- include("partials/header") %>
+
+<section class="content">
+  <p class="eyebrow">Members Only</p>
+  <h1>Welcome, <%= member.name %>.</h1>
+  <p>
+    You are viewing protected content. Only logged-in users can reach this page.
+  </p>
+</section>
+
+<section class="member-list">
+  <h2>Current members</h2>
+  <ul>
+    <% users.forEach((user) => { %>
+      <li>
+        <strong><%= user.name %></strong>
+        <span><%= user.email %></span>
+      </li>
+    <% }) %>
+  </ul>
+</section>
+
+<%- include("partials/footer") %>
