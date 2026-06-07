@@ -108,15 +108,18 @@ app.post("/login", async (req, res) => {
 
     // Stores the session server-side & sends a cookie
     // its available on future requests as req.session
-    // seems to only set the cookie on the first login request, not on subsequent ones
     // req.session.userId = user.id;
     // res.redirect("/members");
+
+    // the above only set the cookie on the first login request, not on subsequent ones
 
     // Regenerate a new session ID to prevent session fixation attacks
     // https://github.com/expressjs/session#sessionregeneratecallback
     req.session.regenerate(function(err) {
-    // will have a new session here
+        // we have a new session here
         if (!err) {
+            // This creates a new session and sets the userId on it
+            // then sends the cookie to the client
             console.log("Session regenerated, new session ID:", req.sessionID);
             req.session.userId = user.id;
             res.redirect("/members");
