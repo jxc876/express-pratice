@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import bcrypt from "bcrypt";
 
 /**
- * This version uses a simple signed cookie to protect the members area.
+ * This example uses a simple signed cookie to protect the members area.
  * 
  * The cookie is named `site_auth` and has a value of "yes" when the user is authenticated.
  * The cookie is signed to prevent tampering, but it is not encrypted, so it should not contain sensitive data.
@@ -19,7 +19,9 @@ const COOKIE_SECRET = process.env.COOKIE_SECRET || "replace-this-with-a-real-sec
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(COOKIE_SECRET));
 
-const PASSWORD_HASH = await bcrypt.hash("secret123", 12);
+// In a real app, you would would store the hash in a DB and not hardcode it
+const PASSWORD = "secret123";
+const PASSWORD_HASH = await bcrypt.hash(PASSWORD, 12);
 
 /**
  * Show a simple home page with links to login, members area, and logout.
