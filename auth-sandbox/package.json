@@ -8,7 +8,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "simple-server": "node server-simple.js",
+    "simple-cookie": "node server-cookie.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

@@ -18,6 +18,10 @@ app.use(cookieParser("replace-this-with-a-real-secret"));
 
 const PASSWORD_HASH = await bcrypt.hash("secret123", 12);
 
+/**
+ * Show a simple home page with links to login, members area, and logout.
+ * The members area and logout links will redirect to login if the user is not authenticated.
+ */
 app.get("/", (req, res) => { 
     res.send(`
     <h1>Welcome</h1>
@@ -27,6 +31,10 @@ app.get("/", (req, res) => {
   `);
 });
 
+/**
+ * Shows a simple login form that submits to the POST /login route.
+ * The form only has a password field, no username, for simplicity.
+ */
 app.get("/login", (req, res) => {
     res.send(`
     <form method="POST" action="/login">
@@ -38,6 +46,10 @@ app.get("/login", (req, res) => {
   `);
 });
 
+/**
+ * Login consist of sending a password-only, no username.
+ * If the password is correct, we set a signed cookie to indicate the user is authenticated.
+ */
 app.post("/login", async (req, res) => {
     console.log("\n-------------------------------");
     console.log("Login request received");
@@ -61,6 +73,32 @@ app.post("/login", async (req, res) => {
     res.redirect("/members");
 });
 
+/**
+ * The members area checks for the presence of this cookie and redirects to login if it's not present or invalid.
+ * The logout route clears the cookie and redirects to login.
+ */
+app.get("/members", requirePassword, (req, res) => {
+    console.log("\n-------------------------------");
+    console.log("Members page requested");
+    res.send("<h1>Protected page</h1>");
+});
+
+/**
+ * Logging out consistent of clearing the cookie and redirecting to login.
+ * Made this a GET route for simplicity so we don't need a form.
+ */
+app.get("/logout", (req, res) => {
+    console.log("\n-------------------------------");
+    console.log("Logout request received");
+    res.clearCookie("site_auth");
+    res.redirect("/login");
+});
+
+/**
+ * Helper middleware to check for the presence of the signed cookie. 
+ * If the cookie is not present or has an invalid signature, it redirects to the login page. 
+ * Otherwise, it calls `next()` to proceed to the protected route handler.
+ */
 function requirePassword(req, res, next) {
     if (req.signedCookies.site_auth !== "yes") {
         return res.redirect("/login");
@@ -68,19 +106,5 @@ function requirePassword(req, res, next) {
 
     next();
 }
-
-app.get("/members", requirePassword, (req, res) => {
-    console.log("\n-------------------------------");
-    console.log("Members page requested");
-    res.send("<h1>Protected page</h1>");
-});
-
-// Making this a GET route for simplicity
-app.get("/logout", (req, res) => {
-    console.log("\n-------------------------------");
-    console.log("Logout request received");
-    res.clearCookie("site_auth");
-    res.redirect("/login");
-});
 
 app.listen(3000);
