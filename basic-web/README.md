@@ -1,18 +1,13 @@
 # Basic Web
 
-A small Express application that demonstrates a public website area, account signup, login, logout, and a protected members-only page.
+A small Express application with:
+- A public website area
+- User signup
+- User login & logout
+- A protected members-only page
 
-The app uses server-rendered EJS templates, Express sessions for authentication state, bcrypt password hashing, and modular CSS served from the public folder. 
+The app uses EJS templates, Express sessions, bcrypt password hashing.
 
-## Features
-
-- Public homepage and about page
-- User signup with basic validation
-- User login and logout
-- Members-only route protected by authentication middleware
-- Flash messages for login, signup, and protected-route redirects
-- Seeded default user for quick local testing
-- Modular CSS split into base, layout, components, forms, pages, and responsive files
 
 ## Default Login
 
