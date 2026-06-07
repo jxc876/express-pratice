@@ -10,17 +10,15 @@ import crypto from "crypto";
  * See https://www.npmjs.com/package/bcrypt
  * See https://www.npmjs.com/package/express-session
  */
-const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "127.0.0.1";
+const app = express();
 
 // Parse URL-encoded bodies (application/x-www-form-urlencoded)
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-/**
- * Configure Sessions.
- */
+// Configure Sessions
 app.use(session({
     secret: process.env.SESSION_SECRET || "replace-this-with-a-real-secret",
     resave: false,

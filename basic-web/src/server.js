@@ -6,22 +6,21 @@ const { randomUUID } = require("crypto");
 
 // You can override the host or port
 // ex: HOST=127.0.0.1 PORT=4000 npm start
-const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "127.0.0.1";
+const app = express();
 
-/**
- * Setup EJS as the view engine.
- */
+// Setup EJS as the view engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+// Serve static files
 app.use(express.static(path.join(__dirname, "public")));
+
+// Parse URL-encoded bodies (application/x-www-form-urlencoded)
 app.use(express.urlencoded({ extended: false }));
 
-/**
- * Configure Sessions.
- */
+// Configure Sessions
 app.use(
   session({
     name: "basic_web_sid",
