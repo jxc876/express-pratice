@@ -2,13 +2,9 @@
 
 A simple app to explore Auth with Express.
 
-There are two files
-* `server-cookies.js` — Uses a signed cookie & password to protect a page
-* `server-sessions.js` — Allows User sign-up & login, uses server side sessions
-
 # Login Flow
 
-A login flow for `server-sessions.js` looks like this:
+A login flow looks like this:
 
 User signs up
 * Server hashes their password
