@@ -4,6 +4,8 @@ const express = require("express");
 const session = require("express-session");
 const { randomUUID } = require("crypto");
 
+// You can override the host or port
+// ex: HOST=127.0.0.1 PORT=4000 npm start
 const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "127.0.0.1";
