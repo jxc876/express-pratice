@@ -2,10 +2,16 @@
 
 A few practice projects with Express.
 
-# `auth-sandbox`
+# `signed-cookies`
 
-* `server-cookies.js` — Uses a signed cookie & password to protect a page
-* `server-sessions.js` — Allows User sign-up & login, uses server side sessions
+Uses a signed cookie & password (no username) to protect a page
+
+
+# `server-sessions-1`
+
+Allows User sign-up & login, uses server side (in-memory) sessions
+
+Uses inline HTML (no template engine)
 
 # `basic-web`
 
@@ -15,3 +21,4 @@ A small Express application with:
 - User login & logout
 - A protected members-only page
 
+Uses EJS templating engine
