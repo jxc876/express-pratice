@@ -8,18 +8,20 @@ Practice projects using Express.
 Uses a signed cookie & password (no username) to protect a page
 
 
-# `server-sessions-1`
+# Server Sessions Projects
 
-Allows User sign-up & login, uses server side (in-memory) sessions
+Both apps include:
 
-Uses inline HTML (no template engine)
-
-# `basic-web`
-
-A small Express application with:
 - A public website area
-- User signup
+- User signup form
 - User login & logout
 - A protected members-only page
+- server side sessions (in-memory)
 
-Uses EJS templating engine
+## `server-sessions-1`
+
+This version uses inline HTML (no templates)
+
+## `server-session-2`
+
+This version uses EJS templates
