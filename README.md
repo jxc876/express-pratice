@@ -1,6 +1,7 @@
 # About
 
-A few practice projects with Express.
+Practice projects using Express.
+
 
 # `signed-cookies`
 
