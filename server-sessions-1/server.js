@@ -2,6 +2,7 @@ import express from "express";
 import session from "express-session";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import cookieParser from "cookie-parser";
 
 /**
  * This version creates a server-side session for each logged-in user.
@@ -17,6 +18,8 @@ const app = express();
 // Parse URL-encoded bodies (application/x-www-form-urlencoded)
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+// app.use(cookieParser());
+app.use(cookieParser(process.env.SESSION_SECRET || "replace-this-with-a-real-secret"));
 
 // Configure Sessions
 app.use(session({
@@ -136,6 +139,8 @@ app.post("/logout", (req, res) => {
 // Members-only route:
 app.get("/members", requireLogin, (req, res) => {
     console.log("\n-------------------------------");
+    console.log("cookies", req.cookies);
+    console.log("signed cookies", req.signedCookies);
     console.log("Members area accessed by user ID:", req.session.userId);
     res.send("Welcome to the members-only area!");
 });

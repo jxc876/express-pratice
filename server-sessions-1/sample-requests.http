@@ -28,7 +28,7 @@ username=user123
 &password=xxxx
 
 
-### Members Area with Valid ogin Session
+### Members Area with Valid login Session
 ### The Response is "200 OK" with a message "Welcome to the members area, user"
 GET http://localhost:3000/members HTTP/1.1
 Cookie: connect.sid=s%3A7V7VCdvxhwkQFxvbmELIZOI3GBKTUdi-.GG3%2FEcxflrVSrW411rGyTKrcDGERlsY9j4%2BKABcrva0; Path=/; HttpOnly; SameSite=Lax
