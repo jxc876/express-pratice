@@ -205,6 +205,8 @@ app.post("/login", redirectIfAuthenticated, async (req, res) => {
   res.redirect("/members");
 });
 
+// Starts the Google OAuth flow when a user clicks "Continue with Google".
+// Passport redirects the browser to Google, then Google returns to /callback.
 app.get(
   "/auth/google",
   redirectIfAuthenticated,
