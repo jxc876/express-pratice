@@ -119,6 +119,40 @@ app.use((req, res, next) => {
   next();
 });
 
+// Starts the Google OAuth flow when a user clicks "Continue with Google".
+// Passport redirects the browser to Google, then Google returns to /callback.
+app.get(
+  "/auth/google",
+  redirectIfAuthenticated,
+  requireGoogleAuthConfig,
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+// Handles Google's redirect back to the app. 
+app.get(
+  "/callback",
+  redirectIfAuthenticated,
+  requireGoogleAuthConfig,
+  // This middleware exchanges the Google authorization code 
+  // for profile data and runs the GoogleStrategy callback.
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    req.session.userId = req.user.id;
+    req.session.flash = "You are logged in with Google.";
+    res.redirect("/members");
+  }
+);
+
+function requireGoogleAuthConfig(req, res, next) {
+  if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
+    return next();
+  }
+
+  req.session.flash =
+    "Google sign-in needs GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in your environment.";
+  res.redirect("/login");
+}
+
 app.get("/", (req, res) => {
   res.render("home", {
     title: "Basic Web",
@@ -205,30 +239,6 @@ app.post("/login", redirectIfAuthenticated, async (req, res) => {
   res.redirect("/members");
 });
 
-// Starts the Google OAuth flow when a user clicks "Continue with Google".
-// Passport redirects the browser to Google, then Google returns to /callback.
-app.get(
-  "/auth/google",
-  redirectIfAuthenticated,
-  requireGoogleAuthConfig,
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-// Handles Google's redirect back to the app. 
-app.get(
-  "/callback",
-  redirectIfAuthenticated,
-  requireGoogleAuthConfig,
-  // This middleware exchanges the Google authorization code 
-  // for profile data and runs the GoogleStrategy callback.
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  (req, res) => {
-    req.session.userId = req.user.id;
-    req.session.flash = "You are logged in with Google.";
-    res.redirect("/members");
-  }
-);
-
 // Handle Logout request
 app.post("/logout", requireAuth, (req, res) => {
   req.logout((logoutError) => {
@@ -276,16 +286,6 @@ function redirectIfAuthenticated(req, res, next) {
   }
 
   next();
-}
-
-function requireGoogleAuthConfig(req, res, next) {
-  if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
-    return next();
-  }
-
-  req.session.flash =
-    "Google sign-in needs GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in your environment.";
-  res.redirect("/login");
 }
 
 const defaultUser = {
