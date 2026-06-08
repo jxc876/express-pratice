@@ -214,10 +214,13 @@ app.get(
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
+// Handles Google's redirect back to the app. 
 app.get(
   "/callback",
   redirectIfAuthenticated,
   requireGoogleAuthConfig,
+  // This middleware exchanges the Google authorization code 
+  // for profile data and runs the GoogleStrategy callback.
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
     req.session.userId = req.user.id;

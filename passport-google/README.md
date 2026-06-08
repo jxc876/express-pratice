@@ -10,9 +10,37 @@ A small Express application with:
 The app uses EJS templates, Express sessions, Passport, and bcrypt password hashing.
 
 
+## Routes
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/` | Public homepage |
+| `GET` | `/about` | Public about page |
+| `GET` | `/signup` | Signup form |
+| `POST` | `/signup` | Creates a user and logs them in |
+| `GET` | `/login` | Login form |
+| `POST` | `/login` | Authenticates a user |
+| `GET` | `/auth/google` | Starts Google OAuth login |
+| `GET` | `/callback` | Handles the Google OAuth callback |
+| `POST` | `/logout` | Destroys the current session |
+| `GET` | `/members` | Protected members-only page |
+
+
+## Default Login
+
+The app seeds one default user every time the server starts:
+
+```text
+Email: demo@example.com
+Password: password123
+```
+
+This is useful for local development because the app currently stores users in memory. Any users created through the signup form are lost when the server restarts, but the default demo user is recreated each time.
+
+
 ## Google Sign-In
 
-Create a Google OAuth application with:
+To enable Google Sign-In create a Google OAuth application with:
 
 ```text
 Authorized JavaScript origin: http://localhost:3000
@@ -31,34 +59,12 @@ Then start the app:
 npm start
 ```
 
-The app loads `.env` automatically. It defaults `GOOGLE_CALLBACK_URL` to `http://localhost:3000/callback`. If you change the host, port, or callback path, set `GOOGLE_CALLBACK_URL` to the exact redirect URI configured in Google.
+The app loads `.env` automatically. I
 
+t defaults `GOOGLE_CALLBACK_URL` to `http://localhost:3000/callback`. 
 
-## Default Login
+If you change the host, port, or callback path, update `GOOGLE_CALLBACK_URL` to the exact URI configured in Google.
 
-The app seeds one default user every time the server starts:
-
-```text
-Email: demo@example.com
-Password: password123
-```
-
-This is useful for local development because the app currently stores users in memory. Any users created through the signup form are lost when the server restarts, but the default demo user is recreated each time.
-
-## Routes
-
-| Method | Path | Description |
-| --- | --- | --- |
-| `GET` | `/` | Public homepage |
-| `GET` | `/about` | Public about page |
-| `GET` | `/signup` | Signup form |
-| `POST` | `/signup` | Creates a user and logs them in |
-| `GET` | `/login` | Login form |
-| `POST` | `/login` | Authenticates a user |
-| `GET` | `/auth/google` | Starts Google OAuth login |
-| `GET` | `/callback` | Handles the Google OAuth callback |
-| `POST` | `/logout` | Destroys the current session |
-| `GET` | `/members` | Protected members-only page |
 
 
 ## How Authentication Works
@@ -76,6 +82,13 @@ req.session.userId = user.id;
 The `requireAuth` middleware checks for a logged-in user before allowing access to `/members`. If no user is found, the visitor is redirected to `/login`.
 
 Passport also stores authenticated Google users in the same session. Google accounts are matched to existing in-memory users by Google profile id first, then by email.
+
+Google sign-in uses two routes:
+
+- `GET /auth/google` starts the OAuth flow when someone clicks `Continue with Google`. Passport redirects the browser to Google and asks for the `profile` and `email` scopes.
+- `GET /callback` runs after Google redirects back to the app with an authorization code. On this route, `passport.authenticate("google", { failureRedirect: "/login" })` exchanges that code for Google profile data, triggers the `GoogleStrategy` callback in `src/server.js`, and sets `req.user` if authentication succeeds.
+
+After Passport sets `req.user`, the callback route saves `req.user.id` to the session and redirects the user to `/members`. If Google authentication fails, Passport sends the user back to `/login`.
 
 The app also uses `res.locals` to make user data available to every EJS template:
 
