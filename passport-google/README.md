@@ -59,9 +59,7 @@ Then start the app:
 npm start
 ```
 
-The app loads `.env` automatically. I
-
-t defaults `GOOGLE_CALLBACK_URL` to `http://localhost:3000/callback`. 
+The app loads `.env` automatically. It defaults `GOOGLE_CALLBACK_URL` to `http://localhost:3000/callback`.
 
 If you change the host, port, or callback path, update `GOOGLE_CALLBACK_URL` to the exact URI configured in Google.
 
@@ -69,7 +67,7 @@ If you change the host, port, or callback path, update `GOOGLE_CALLBACK_URL` to 
 
 ## How Authentication Works
 
-Users are stored in an in-memory `users` array in `src/server.js`.
+Users are stored in an in-memory `users` array in `src/auth.js`.
 
 Passwords are hashed with bcrypt before they are stored.
 
@@ -86,7 +84,7 @@ Passport also stores authenticated Google users in the same session. Google acco
 Google sign-in uses two routes:
 
 - `GET /auth/google` starts the OAuth flow when someone clicks `Continue with Google`. Passport redirects the browser to Google and asks for the `profile` and `email` scopes.
-- `GET /callback` runs after Google redirects back to the app with an authorization code. On this route, `passport.authenticate("google", { failureRedirect: "/login" })` exchanges that code for Google profile data, triggers the `GoogleStrategy` callback in `src/server.js`, and sets `req.user` if authentication succeeds.
+- `GET /callback` runs after Google redirects back to the app with an authorization code. On this route, `passport.authenticate("google", { failureRedirect: "/login" })` exchanges that code for Google profile data, triggers the `GoogleStrategy` callback in `src/auth.js`, and sets `req.user` if authentication succeeds.
 
 After Passport sets `req.user`, the callback route saves `req.user.id` to the session and redirects the user to `/members`. If Google authentication fails, Passport sends the user back to `/login`.
 
@@ -98,6 +96,8 @@ res.locals.flash = req.session.flash;
 ```
 
 That lets the header and pages react to the current login state without passing the same values through every `res.render` call.
+
+Most auth-related code lives in `src/auth.js`, including session setup, Passport setup, login/signup/logout routes, Google OAuth routes, auth middleware, and the in-memory users array. `src/server.js` wires the app together and keeps the public page routes plus the protected `/members` route.
 
 
 ## Development Notes
