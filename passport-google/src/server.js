@@ -63,8 +63,12 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
       (accessToken, refreshToken, profile, done) => {
         const email = getPrimaryEmail(profile);
 
-        // find user by googleId or email
+        // find user by googleId
         let user = users.find((candidate) => candidate.googleId === profile.id);
+
+        // find user by email if not found by googleId
+        // handles case where user signed up with email 
+        // and is now signing in with Google for the first time
         if (!user && email) {
           user = users.find((candidate) => candidate.email === email);
         }
@@ -75,6 +79,8 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
           user.name = user.name || profile.displayName || email;
           user.email = user.email || email;
           user.photo = profile.photos && profile.photos[0] && profile.photos[0].value;
+
+          // successfully found existing user, pass to Passport
           return done(null, user);
         }
 
@@ -91,7 +97,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
         // In a real application, you'd save the user to the database here
         users.push(user);
 
-        // pass the user to Passport
+        // successfully created new user, pass to Passport
         done(null, user);
       }
     )
