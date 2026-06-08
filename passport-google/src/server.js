@@ -45,12 +45,14 @@ app.use(
 
 // When Passport logs a user in, store only their id in the session.
 // This keeps the session small instead of saving the whole user object.
+// https://www.passportjs.org/concepts/authentication/sessions
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
 // On later requests, Passport reads that id from the session, finds the full
 // user record, and attaches it to req.user.
+// https://www.passportjs.org/concepts/authentication/sessions
 passport.deserializeUser((id, done) => {
   done(null, users.find((user) => user.id === id) || false);
 });
