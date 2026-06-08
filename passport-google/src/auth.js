@@ -2,22 +2,12 @@ const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const session = require("express-session");
-const { randomUUID } = require("crypto");
+const db = require("./db");
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const GOOGLE_CALLBACK_URL =
   process.env.GOOGLE_CALLBACK_URL || "http://localhost:3000/callback";
-
-const defaultUser = {
-  id: randomUUID(),
-  name: "Demo User",
-  email: "demo@example.com",
-  passwordHash: bcrypt.hashSync("password123", 12),
-  joinedAt: new Date()
-};
-
-const users = [defaultUser];
 
 // When Passport logs a user in, store only their id in the session.
 // This keeps the session small instead of saving the whole user object.
@@ -30,7 +20,7 @@ passport.serializeUser((user, done) => {
 // user record, and attaches it to req.user.
 // https://www.passportjs.org/concepts/authentication/sessions
 passport.deserializeUser((id, done) => {
-  done(null, users.find((user) => user.id === id) || false);
+  done(null, db.getUser(id) || false);
 });
 
 if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
@@ -46,38 +36,35 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
         const email = getPrimaryEmail(profile);
 
         // find user by googleId
-        let user = users.find((candidate) => candidate.googleId === profile.id);
+        let user = db.getUserByGoogleId(profile.id);
 
         // find user by email if not found by googleId
         // handles case where user signed up with email
         // and is now signing in with Google for the first time
         if (!user && email) {
-          user = users.find((candidate) => candidate.email === email);
+          user = db.getUserByEmail(email);
         }
 
         // if user exists, update their googleId and profile info if needed
         if (user) {
-          user.googleId = profile.id;
-          user.name = user.name || profile.displayName || email;
-          user.email = user.email || email;
-          user.photo = profile.photos && profile.photos[0] && profile.photos[0].value;
+          const updatedUser = db.updateUser(user.id, {
+            googleId: profile.id,
+            name: user.name || profile.displayName || email,
+            email: user.email || email,
+            photo: profile.photos && profile.photos[0] && profile.photos[0].value
+          });
 
           // successfully found existing user, pass to Passport
-          return done(null, user);
+          return done(null, updatedUser);
         }
 
         // if user doesn't exist, create a new one
-        user = {
-          id: randomUUID(),
+        user = db.createUser({
           googleId: profile.id,
           name: profile.displayName || email || "Google User",
           email,
-          photo: profile.photos && profile.photos[0] && profile.photos[0].value,
-          joinedAt: new Date()
-        };
-
-        // In a real application, you'd save the user to the database here
-        users.push(user);
+          photo: profile.photos && profile.photos[0] && profile.photos[0].value
+        });
 
         // successfully created new user, pass to Passport
         done(null, user);
@@ -143,7 +130,7 @@ function configureAuth(app) {
       });
     }
 
-    if (users.some((user) => user.email === cleanEmail)) {
+    if (db.getUserByEmail(cleanEmail)) {
       return res.status(409).render("signup", {
         title: "Sign Up",
         form: { name: cleanName, email: cleanEmail },
@@ -152,15 +139,12 @@ function configureAuth(app) {
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
-    const user = {
-      id: randomUUID(),
+    const user = db.createUser({
       name: cleanName,
       email: cleanEmail,
-      passwordHash,
-      joinedAt: new Date()
-    };
+      passwordHash
+    });
 
-    users.push(user);
     req.session.userId = user.id;
     req.session.flash = "Welcome! Your account is ready.";
     res.redirect("/members");
@@ -175,7 +159,7 @@ function configureAuth(app) {
   app.post("/login", redirectIfAuthenticated, async (req, res) => {
     const email = String(req.body.email || "").trim().toLowerCase();
     const password = String(req.body.password || "");
-    const user = users.find((candidate) => candidate.email === email);
+    const user = db.getUserByEmail(email);
     const isValid =
       user && user.passwordHash && (await bcrypt.compare(password, user.passwordHash));
 
@@ -263,21 +247,16 @@ function requireGoogleAuthConfig(req, res, next) {
 }
 
 function getCurrentUser(req) {
-  return req.user || users.find((user) => user.id === req.session.userId);
-}
-
-function getPrimaryEmail(profile) {
-  const email = profile.emails && profile.emails[0] && profile.emails[0].value;
-  return email ? email.trim().toLowerCase() : "";
-}
-
-function getUsers() {
-  return users;
+  return req.user || db.getUser(req.session.userId);
 }
 
 module.exports = {
   configureAuth,
   getCurrentUser,
-  getUsers,
   requireAuth
 };
+
+function getPrimaryEmail(profile) {
+  const email = profile.emails && profile.emails[0] && profile.emails[0].value;
+  return email ? email.trim().toLowerCase() : "";
+}

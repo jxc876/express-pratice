@@ -67,7 +67,7 @@ If you change the host, port, or callback path, update `GOOGLE_CALLBACK_URL` to 
 
 ## How Authentication Works
 
-Users are stored in an in-memory `users` array in `src/auth.js`.
+Users are stored in an in-memory `users` array in `src/db.js`.
 
 Passwords are hashed with bcrypt before they are stored.
 
@@ -97,7 +97,7 @@ res.locals.flash = req.session.flash;
 
 That lets the header and pages react to the current login state without passing the same values through every `res.render` call.
 
-Most auth-related code lives in `src/auth.js`, including session setup, Passport setup, login/signup/logout routes, Google OAuth routes, auth middleware, and the in-memory users array. `src/server.js` wires the app together and keeps the public page routes plus the protected `/members` route.
+Most auth-related code lives in `src/auth.js`, including session setup, Passport setup, login/signup/logout routes, Google OAuth routes, and auth middleware. User storage and lookup helpers live in `src/db.js`, so calls like finding users by id, email, or Google profile id are kept in one place. `src/server.js` wires the app together and keeps the public page routes plus the protected `/members` route.
 
 
 ## Development Notes

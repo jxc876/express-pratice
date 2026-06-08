@@ -3,6 +3,7 @@ require("dotenv").config({ quiet: true });
 
 const express = require("express");
 const auth = require("./auth");
+const db = require("./db");
 
 // You can override the host or port
 // ex: HOST=127.0.0.1 PORT=4000 npm start
@@ -25,7 +26,7 @@ auth.configureAuth(app);
 app.get("/", (req, res) => {
   res.render("home", {
     title: "Basic Web",
-    usersCount: auth.getUsers().length
+    usersCount: db.getUsers().length
   });
 });
 
@@ -37,7 +38,7 @@ app.get("/members", auth.requireAuth, (req, res) => {
   res.render("members", {
     title: "Members",
     member: auth.getCurrentUser(req),
-    users: auth.getUsers()
+    users: db.getUsers()
   });
 });
 
