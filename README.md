@@ -30,12 +30,12 @@ Cookie: <cookie-name>=<cookie-value>
 
 The server can read whatever information is inside the cookie.
 
-However Cookies have a few downsides: 
+However Cookies have a few limitations: 
 - They are visible by the client
 - Their sizes are limited (4 KB)
 - A user can delete their cookies 
 - A user can modify the cookie (unless it's server signed)
-
+- By default only sent to the same Host
 
 Docs
 - https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview
@@ -62,19 +62,30 @@ Express sets cookie cookies like this:
 connect.sid=7V7VCdvxhwkQFxvbmELIZOI3GBKTUdi-.<signature>
 ```
 
-Session are typically used when a website is server side rendered using HTML templates.
+Sessions are typically used when a website is server side rendered using HTML templates,
 
-The user is given a sign & login form.
+However they can also work with Single Page Apps.
 
-The server receives the credentials (username + pass) and stores a hash of the password:
 
-```
+How User Creation Works
+- When the user signs-up the server receives the username & password
+- The server stores the user details + a hashed password:
+
+```json
   const bcrypt = require("bcryptjs");
 
   const passwordHash = await bcrypt.hash(password, 12);
+
+  db.save(username, passwordHash)
 ```
 
 On future logins, if the hash of the password matches the user is authenticated and a session is created.
+
+
+## SPA
+
+Single Page Applications (SPAs) can use Cookies or Bearer Tokens (see next section).
+
 
 
 ## Bearer Tokens
