@@ -82,7 +82,7 @@ How User Creation Works
 On future logins, if the hash of the password matches the user is authenticated and a session is created.
 
 
-## SPA
+## SPAs
 
 Single Page Applications (SPAs) can use Cookies or Bearer Tokens (see next section).
 
