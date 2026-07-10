@@ -101,7 +101,7 @@ Authorization: Bearer <token>
 
 Note — Use strong crypto to genereate a random token:
 
-```javacsript
+```javascript
 const crypto = require("node:crypto");
 
 function generateBearerToken() {
