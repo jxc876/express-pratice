@@ -14,10 +14,13 @@ https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview
 
 In order to associte two requests we can use cookies.
 
-When a client requests a resource, the server can include a cookie in ther response:
+When a client requests a resource, the server can include a cookie in the response:
 
 ```
+# Request
 GET /members HTTP/1.1
+
+# Response
 Set-Cookie: <cookie-name>=<cookie-value>
 ```
 
