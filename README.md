@@ -74,7 +74,7 @@ How User Creation Works
 - When the user signs-up the server receives the username & password
 - The server stores the user details + a hashed password:
 
-```json
+```javascript
   const bcrypt = require("bcryptjs");
 
   const passwordHash = await bcrypt.hash(password, 12);
